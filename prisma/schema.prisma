@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  firstname String
+  lastname  String
+  password  String
+  role      Role      @default(USER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Profile   Profile[]
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  USER
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  user_id   String
+  user      User     @relation(fields: [user_id], references: [id])
+  username  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Representative {
+  id              String     @id @default(cuid())
+  CI              String     @unique
+  first_name      String
+  middle_name     String?
+  lastname        String
+  second_lastname String?
+  email           String
+  phone           String
+  debt            Float      @default(0)
+  isDebtor        Boolean    @default(false)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  Students        Students[]
+
+  @@unique([phone, email])
+}
+
+model Students {
+  id                     String                   @id @default(cuid())
+  CI                     String?                  @unique
+  first_name             String
+  middle_name            String?
+  lastname               String
+  second_lastname        String?
+  grade                  Degree                   @relation(fields: [gradeId], references: [id])
+  section                Section                  @relation(fields: [sectionId], references: [id])
+  representative         Representative           @relation(fields: [representativeId], references: [id])
+  representativeId       String
+  gradeId                String
+  sectionId              String
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  Observations           Observations[]
+  StudentGrades          StudentGrades[]
+  StudentGradesPerDegree StudentGradesPerDegree[]
+  Lapse                  Lapse?                   @relation(fields: [lapseId], references: [id])
+  lapseId                String?
+}
+
+// Modelo para examenes por lapso
+model StudentGrades {
+  id        String   @id @default(cuid())
+  studentId String
+  student   Students @relation(fields: [studentId], references: [id])
+  grade     Float
+  lapse     Lapse    @relation(fields: [lapseId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lapseId   String
+}
+
+model StudentGradesPerDegree {
+  id        String   @id @default(cuid())
+  studentId String
+  student   Students @relation(fields: [studentId], references: [id])
+  grade     Float
+  lapse     Lapse    @relation(fields: [lapseId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lapseId   String
+}
+
+model Observations {
+  id          String   @id @default(cuid())
+  studentId   String
+  student     Students @relation(fields: [studentId], references: [id])
+  subjectId   String
+  subject     Subjects @relation(fields: [subjectId], references: [id])
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([studentId, subjectId])
+}
+
+// materias
+model Subjects {
+  id           String         @id @default(cuid())
+  name         String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Observations Observations[]
+}
+
+// grados
+model Degree {
+  id        String     @id @default(cuid())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  students  Students[]
+}
+
+// secciones
+model Section {
+  id        String     @id @default(cuid())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  students  Students[]
+}
+
+model Lapse {
+  id                     String                   @id @default(cuid())
+  name                   String
+  startDate              DateTime                 @default(now())
+  endDate                DateTime                 @default(now())
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  students               Students[]
+  StudentGrades          StudentGrades[]
+  StudentGradesPerDegree StudentGradesPerDegree[]
+}
