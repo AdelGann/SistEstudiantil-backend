@@ -55,7 +55,7 @@ model Representative {
   updatedAt       DateTime   @updatedAt
   Students        Students[]
 
-  @@unique([phone, email])
+  @@unique([CI, email])
 }
 
 model Students {
