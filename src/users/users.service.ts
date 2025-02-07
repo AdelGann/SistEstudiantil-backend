@@ -32,17 +32,14 @@ export class UsersService {
       },
     });
   }
-  async updateUsers(
-    email: string,
-    updateUser: UpdateUserDto,
-  ): Promise<UserType> {
+  async updateUsers(id: string, updateUser: UpdateUserDto): Promise<UserType> {
     const { password, newPassword, ...data } = updateUser;
 
-    if (!email || !newPassword) {
-      throw new BadRequestException('email and new password are required');
+    if (!id || !newPassword) {
+      throw new BadRequestException('id and new password are required');
     }
 
-    const user = await this.dbService.user.findUnique({ where: { email } });
+    const user = await this.dbService.user.findUnique({ where: { id } });
 
     if (!user) {
       throw new NotFoundException('user not founded');
@@ -55,7 +52,7 @@ export class UsersService {
     }
     const newEncryptedPassword = await argon2.hash(newPassword);
     return this.dbService.user.update({
-      where: { email },
+      where: { email: user.email },
       data: {
         password: newEncryptedPassword,
         firstname: data?.firstname || user.firstname,
@@ -67,7 +64,7 @@ export class UsersService {
   async getUsers(): Promise<UserType[]> {
     return await this.dbService.user.findMany({});
   }
-  
+
   async deleteUser(id: string): Promise<boolean> {
     if (!id) {
       throw new BadRequestException('user id is required!');

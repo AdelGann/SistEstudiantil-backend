@@ -11,6 +11,7 @@ import { UsersService } from './users.service';
 import { UserType } from './type/user.type';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUser } from 'src/auth/decorators/getUser.decorator';
 
 @Controller('api/v1/users')
 export class UsersController {
@@ -25,8 +26,11 @@ export class UsersController {
     return await this.userService.createUsers(createUser);
   }
   @Patch()
-  async updateUser(@Body() updateUser: UpdateUserDto): Promise<UserType> {
-    return await this.userService.updateUsers('', updateUser);
+  async updateUser(
+    @GetUser('id') userId: string,
+    @Body() updateUser: UpdateUserDto,
+  ): Promise<UserType> {
+    return await this.userService.updateUsers(userId, updateUser);
   }
   @Delete()
   async deleteUser(@Query('id') id: string): Promise<boolean> {
