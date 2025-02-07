@@ -44,7 +44,7 @@ export class AuthService {
       throw new BadRequestException('The password is incorrect');
     return {
       accessToken: await this.jwtService.signAsync({
-        userId: user.id,
+        id: user.id,
         role: user.role,
       }),
     };
@@ -102,7 +102,7 @@ export class AuthService {
     });
     return {
       accessToken: await this.jwtService.signAsync({
-        userId: userRegistered.id,
+        id: userRegistered.id,
         role: userRegistered.role,
       }),
     };
