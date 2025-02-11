@@ -3,8 +3,8 @@ services:
   postgres:
     image: postgres:latest
     environment:
-      POSTGRES_USER: AdelG
-      POSTGRES_PASSWORD: Gannem22@
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
       POSTGRES_DB: db
     ports:
       - '5432:5432'
