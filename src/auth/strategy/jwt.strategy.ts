@@ -12,7 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ignoreExpiration: false,
       secretOrKey: async (configService: ConfigService) => {
         return {
-          secret:  process.env.JWT_SECRET,
+          secret: process.env.JWT_SECRET,
         };
       },
     });
