@@ -94,8 +94,8 @@ export class AuthService {
     const userRegistered = await this.dbService.user.create({
       data: {
         email,
-        firstname: representative.first_name,
-        lastname: representative.lastname,
+        firstname: representative.names,
+        lastname: representative.lastnames,
         password: encryptedPassword,
         role: Role.USER,
       },

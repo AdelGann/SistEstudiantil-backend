@@ -15,7 +15,6 @@ import { Request } from 'express';
  * Si el token es válido, almacena el payload en request['user'].
  * Protege las rutas que requieren autenticación.
  */
-// elimine el jwt config
 
 @Injectable()
 export class JwtGuard implements CanActivate {
@@ -32,14 +31,9 @@ export class JwtGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException();
     }
-    const secretOrKey = async (configService: ConfigService) => {
-      return {
-        secret: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
-      };
-    };
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: secretOrKey[0],
+        secret: process.env.JWT_SECRET,
       });
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
