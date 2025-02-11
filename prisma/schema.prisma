@@ -41,19 +41,17 @@ model Profile {
 }
 
 model Representative {
-  id              String     @id @default(cuid())
-  CI              String     @unique
-  first_name      String
-  middle_name     String?
-  lastname        String
-  second_lastname String?
-  email           String
-  phone           String
-  debt            Float      @default(0)
-  isDebtor        Boolean    @default(false)
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  Students        Students[]
+  id        String     @id @default(cuid())
+  CI        String     @unique
+  names     String
+  lastnames String
+  email     String
+  phone     String
+  debt      Float      @default(0)
+  isDebtor  Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Students  Students[]
 
   @@unique([CI, email])
 }

@@ -5,7 +5,7 @@
 
 */
 -- DropIndex
-DROP INDEX "Representative_phone_email_key";
+DROP INDEX "Representative_CI_email_phone_key";
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Representative_CI_email_key" ON "Representative"("CI", "email");

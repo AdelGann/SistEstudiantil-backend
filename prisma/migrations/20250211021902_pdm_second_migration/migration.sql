@@ -30,10 +30,8 @@ CREATE TABLE "Profile" (
 CREATE TABLE "Representative" (
     "id" TEXT NOT NULL,
     "CI" TEXT NOT NULL,
-    "first_name" TEXT NOT NULL,
-    "middle_name" TEXT,
-    "lastname" TEXT NOT NULL,
-    "second_lastname" TEXT,
+    "names" TEXT NOT NULL,
+    "lastnames" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "debt" DOUBLE PRECISION NOT NULL DEFAULT 0,
@@ -147,7 +145,7 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "Representative_CI_key" ON "Representative"("CI");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Representative_phone_email_key" ON "Representative"("phone", "email");
+CREATE UNIQUE INDEX "Representative_CI_email_phone_key" ON "Representative"("CI", "email", "phone");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Students_CI_key" ON "Students"("CI");
