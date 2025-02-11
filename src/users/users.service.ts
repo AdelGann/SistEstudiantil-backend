@@ -30,6 +30,11 @@ export class UsersService {
         password: encryptedPassword,
         ...data,
       },
+      select: {
+        email: true,
+        firstname: true,
+        lastname: true,
+      },
     });
   }
   async updateUsers(id: string, updateUser: UpdateUserDto): Promise<UserType> {
@@ -45,11 +50,12 @@ export class UsersService {
       throw new NotFoundException('user not founded');
     }
 
-    const isEqual = await argon2.verify(password, user.password);
+    const isEqual = await argon2.verify(user.password, password);
 
     if (!isEqual) {
       throw new BadRequestException('password are not equal');
     }
+
     const newEncryptedPassword = await argon2.hash(newPassword);
     return this.dbService.user.update({
       where: { email: user.email },
@@ -58,11 +64,22 @@ export class UsersService {
         firstname: data?.firstname || user.firstname,
         lastname: data?.lastname || user.lastname,
       },
+      select: {
+        email: true,
+        firstname: true,
+        lastname: true,
+      },
     });
   }
 
   async getUsers(): Promise<UserType[]> {
-    return await this.dbService.user.findMany({});
+    return await this.dbService.user.findMany({
+      select: {
+        email: true,
+        firstname: true,
+        lastname: true,
+      },
+    });
   }
 
   async deleteUser(id: string): Promise<boolean> {
