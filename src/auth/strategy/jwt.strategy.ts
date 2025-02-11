@@ -12,7 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ignoreExpiration: false,
       secretOrKey: async (configService: ConfigService) => {
         return {
-          secret: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
+          secret:  process.env.JWT_SECRET,
         };
       },
     });
