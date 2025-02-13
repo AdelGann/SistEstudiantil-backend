@@ -59,6 +59,7 @@ export class RepresentativeService {
         phone: true,
         debt: true,
         isDebtor: true,
+        createdAt: true,
       },
     });
   }
@@ -67,6 +68,7 @@ export class RepresentativeService {
    * @name getAllRepresentatives
    * @description Recupera todos los representantes del sistema.
    * @async
+   *
    * @returns {Promise<RepresentativeType[]>} - Una promesa que resuelve a un array de objetos RepresentativeType, representando a todos los representantes.
    */
   async getAllRepresentatives(): Promise<RepresentativeType[]> {
@@ -80,6 +82,7 @@ export class RepresentativeService {
         phone: true,
         debt: true,
         isDebtor: true,
+        createdAt: true,
       },
     });
   }
@@ -157,6 +160,7 @@ export class RepresentativeService {
         phone: true,
         debt: true,
         isDebtor: true,
+        createdAt: true,
       },
     });
   }
