@@ -7,16 +7,15 @@ import { RegisterUser } from './dto/registerUser.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
+  @Post('/login')
   async Login(
     @Body() { email, password }: { email: string; password: string },
   ): Promise<Token> {
     return this.authService.login({ email, password });
   }
 
-  @Post()
+  @Post('/register')
   async Register(@Body() registerDto: RegisterUser): Promise<Token> {
     return this.authService.register(registerDto);
   }
-  
 }
