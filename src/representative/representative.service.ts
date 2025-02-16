@@ -60,6 +60,7 @@ export class RepresentativeService {
         debt: true,
         isDebtor: true,
         createdAt: true,
+        State: true,
       },
     });
   }
@@ -71,8 +72,9 @@ export class RepresentativeService {
    *
    * @returns {Promise<RepresentativeType[]>} - Una promesa que resuelve a un array de objetos RepresentativeType, representando a todos los representantes.
    */
-  async getAllRepresentatives(): Promise<RepresentativeType[]> {
+  async getAllRepresentatives(state?: boolean): Promise<RepresentativeType[]> {
     return await this.dbService.representative.findMany({
+      where: { State: state ? state : false },
       select: {
         id: true,
         CI: true,
@@ -83,7 +85,10 @@ export class RepresentativeService {
         debt: true,
         isDebtor: true,
         createdAt: true,
+        State: true,
       },
+
+      orderBy: { lastnames: 'asc' },
     });
   }
 
@@ -161,6 +166,7 @@ export class RepresentativeService {
         debt: true,
         isDebtor: true,
         createdAt: true,
+        State: true,
       },
     });
   }
@@ -183,7 +189,25 @@ export class RepresentativeService {
       ],
     });
   }
-
+  /**
+   * @name representativeLogicDelete
+   * @description Cambia el estado de actividad de un representante del sistema por su ID.
+   * @async
+   * @param {string} id - El ID del representante a eliminar.
+   * @returns {Promise<boolean>} - Una promesa que resuelve a `true` si el representante fue eliminado exitosamente.
+   * @throws {NotFoundException} - Si no se encuentra un representante con el ID especificado.
+   */
+  async representativeLogicDelete(id: string): Promise<boolean> {
+    const representative = await this.dbService.representative.findFirst({
+      where: { id },
+    });
+    if (!representative)
+      throw new NotFoundException('Representative not founded');
+    return !!(await this.dbService.representative.update({
+      where: { id },
+      data: { State: !representative.State },
+    }));
+  }
   /**
    * @name deleteRepresentative
    * @description Elimina un representante del sistema por su ID.
