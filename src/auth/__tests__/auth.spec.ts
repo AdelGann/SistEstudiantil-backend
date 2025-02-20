@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
+import { AuthService } from '../auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { DbService } from '../common/db/db.service';
+import { DbService } from '../../common/db/db.service';
 import * as argon2 from 'argon2';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { Role } from '@prisma/client';
@@ -37,50 +37,58 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should return a token if credentials are valid', async () => {
-      const email = 'test@example.com';
-      const password = 'password';
+      const credentials = {
+        email: 'imadelg14@gmail.com',
+        password: 'GannemTest@Admin',
+      };
       const user = {
-        id: '1',
-        email,
-        password: await argon2.hash(password),
-        firstname: 'Test',
-        lastname: 'User',
-        role: Role.USER,
+        id: '95210-5429sh125-125-asgh2152',
+        email: 'imadelg14@gmail.com',
+        password: await argon2.hash('GannemTest@Admin'),
+        firstname: 'Adel',
+        lastname: 'Gannem',
+        role: Role.ADMIN,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      const token = 'token';
+      const token = 'mockedToken';
 
       jest.spyOn(dbService.user, 'findUnique').mockResolvedValue(user);
       jest.spyOn(argon2, 'verify').mockResolvedValue(true);
       jest.spyOn(jwtService, 'signAsync').mockResolvedValue(token);
 
-      const result = await service.login({ email, password });
+      const result = await service.login(credentials);
 
       expect(result).toEqual({ accessToken: token });
     });
 
     it('should throw NotFoundException if user is not found', async () => {
-      const email = 'test@example.com';
-      const password = 'password';
+       const credentials = {
+         email: 'imadelg14@gmail.com',
+         password: 'GannemTest@User',
+       };
 
-      jest.spyOn(dbService.user, 'findUnique').mockResolvedValue(null);
+      jest.spyOn(dbService.user, 'findUnique').mockRejectedValue(() => {
+        throw new NotFoundException('User not founded');
+      });
 
-      await expect(service.login({ email, password })).rejects.toThrow(
+      await expect(service.login(credentials)).rejects.toThrow(
         NotFoundException,
       );
     });
 
     it('should throw BadRequestException if password is incorrect', async () => {
-      const email = 'test@example.com';
-      const password = 'password';
+      const credentials = {
+        email: 'imadelg14@gmail.com',
+        password: 'GannemTest@User',
+      };
       const user = {
-        id: '1',
-        email,
-        password: await argon2.hash('wrongpassword'),
-        firstname: 'Test',
-        lastname: 'User',
-        role: Role.USER,
+        id: '95210-5429sh125-125-asgh2152',
+        email: 'imadelg14@gmail.com',
+        password: await argon2.hash('GannemTest@Admin'),
+        firstname: 'Adel',
+        lastname: 'Gannem',
+        role: Role.ADMIN,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -88,9 +96,13 @@ describe('AuthService', () => {
       jest.spyOn(dbService.user, 'findUnique').mockResolvedValue(user);
       jest.spyOn(argon2, 'verify').mockResolvedValue(false);
 
-      await expect(service.login({ email, password })).rejects.toThrow(
+      await expect(service.login(credentials)).rejects.toThrow(
         BadRequestException,
       );
     });
   });
+  
+  describe("register", () => {
+    
+  })
 });

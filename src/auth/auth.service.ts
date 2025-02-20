@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { DbService } from 'src/common/db/db.service';
+import { DbService } from '../common/db/db.service';
 import * as argon2 from 'argon2';
 import { Token } from './type/jwt.object';
 import { RegisterUser } from './dto/registerUser.dto';
@@ -94,8 +94,8 @@ export class AuthService {
     const userRegistered = await this.dbService.user.create({
       data: {
         email,
-        firstname: representative.names,
-        lastname: representative.lastnames,
+        firstname: representative.first_name,
+        lastname: representative.lastname,
         password: encryptedPassword,
         role: Role.USER,
       },
